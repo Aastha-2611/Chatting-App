@@ -3,7 +3,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:v_chat/routes/app_route_config.dart';
 
-late Size mq;
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized;
 
@@ -26,9 +25,10 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp.router(
       debugShowCheckedModeBanner: false,
-      routeInformationParser: MyAppRoute().router.routeInformationParser,
-      routerDelegate: MyAppRoute().router.routerDelegate,
-      routeInformationProvider: MyAppRoute().router.routeInformationProvider,
+      routerConfig: MyAppRoute().router,
+      //routeInformationParser: MyAppRoute().router.routeInformationParser,
+      // routerDelegate: MyAppRoute().router.routerDelegate,
+      //routeInformationProvider: MyAppRoute().router.routeInformationProvider,
       theme: ThemeData(
           appBarTheme: AppBarTheme(
               iconTheme: IconThemeData(color: Colors.black),
