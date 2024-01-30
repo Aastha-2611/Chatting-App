@@ -67,7 +67,7 @@ class GettingStarted extends StatelessWidget {
                 backgroundColor: Color.fromARGB(255, 103, 215, 238),
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.zero)),
             onPressed: () {
-              GoRouter.of(context).goNamed(MyAppRoutesConstants.signUpRoute);
+              GoRouter.of(context).pushNamed(MyAppRoutesConstants.signUpRoute);
             },
             child: Text(
               'Sign Up',

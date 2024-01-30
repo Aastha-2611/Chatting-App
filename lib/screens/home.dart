@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:v_chat/main.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
