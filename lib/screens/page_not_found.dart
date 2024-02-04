@@ -6,11 +6,7 @@ class PageNotFound extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Positioned(
-        child: Center(
-          child: Image.asset('images/error.jpg'),
-        ),
-      ),
+      body: Center(child: Image.asset('images/error.jpg')),
     );
   }
 }

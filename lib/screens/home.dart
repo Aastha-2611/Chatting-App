@@ -1,5 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:go_router/go_router.dart';
+import 'package:v_chat/helper/authservices.dart';
+import 'package:v_chat/routes/app_route_constant.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -9,6 +13,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  FirebaseServices _firebaseServices = FirebaseServices();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -18,7 +23,20 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
         leading: Icon(CupertinoIcons.home),
         actions: [
-          IconButton(onPressed: () {}, icon: Icon(Icons.search_rounded)),
+          IconButton(
+              onPressed: () {
+                _firebaseServices.signOut();
+                GoRouter.of(context)
+                    .replaceNamed(MyAppRoutesConstants.signUpRoute);
+                Fluttertoast.showToast(
+                    msg: 'Sign out successful',
+                    gravity: ToastGravity.BOTTOM,
+                    timeInSecForIosWeb: 1,
+                    backgroundColor: Colors.blue,
+                    textColor: Colors.white,
+                    fontSize: 16.0);
+              },
+              icon: Icon(Icons.search_rounded)),
           IconButton(onPressed: () {}, icon: Icon(Icons.more_vert_rounded))
         ],
       ),

@@ -13,7 +13,7 @@ class MyAppRoute {
   GoRouter router = GoRouter(
     routes: <GoRoute>[
       GoRoute(
-        path: '/',
+        path: '/getting_started',
         name: MyAppRoutesConstants.gettingStartedRoute,
         pageBuilder: (context, state) {
           return MaterialPage(child: GettingStarted());
@@ -34,7 +34,7 @@ class MyAppRoute {
         },
       ),
       GoRoute(
-          path: '/signUp',
+          path: '/',
           name: MyAppRoutesConstants.signUpRoute,
           pageBuilder: (context, state) {
             return MaterialPage(child: SignUp());
