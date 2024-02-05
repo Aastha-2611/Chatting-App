@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:go_router/go_router.dart';
 import 'package:v_chat/helper/authservices.dart';
+import 'package:v_chat/main.dart';
 import 'package:v_chat/routes/app_route_constant.dart';
+import 'package:v_chat/widgets/chat_card.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -40,6 +42,16 @@ class _HomeScreenState extends State<HomeScreen> {
           IconButton(onPressed: () {}, icon: Icon(Icons.more_vert_rounded))
         ],
       ),
+      body: SafeArea(child: StreamBuilder(builder: (context, snapshot) {
+        return ListView.builder(
+          padding: EdgeInsets.only(top: mq.height * .01),
+          itemCount: 20,
+          physics: BouncingScrollPhysics(),
+          itemBuilder: (BuildContext context, int index) {
+            return ChatUserCard();
+          },
+        );
+      })),
       floatingActionButton: Padding(
         padding: const EdgeInsets.all(8.0),
         child: FloatingActionButton(

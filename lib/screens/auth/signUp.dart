@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:go_router/go_router.dart';
 import 'package:v_chat/app_theme.dart/text_color.dart';
 import 'package:v_chat/helper/authservices.dart';
@@ -204,7 +205,11 @@ class _SignUpState extends State<SignUp> {
                                   backgroundColor: Colors.white,
                                   shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.zero)),
-                              onPressed: () {},
+                              onPressed: () {
+                                // GoRouter.of(context).replaceNamed(
+                                //    MyAppRoutesConstants.homeRoute);
+                                // signInGoogle(context);
+                              },
                               label: RichText(
                                   text: TextSpan(children: [
                                 TextSpan(
@@ -279,10 +284,26 @@ class _SignUpState extends State<SignUp> {
       _signingUp = false;
     });
     if (user != null) {
-      _firebaseServices.createUser(email, password, name);
+      _firebaseServices.createUser(user.uid, email, name);
       GoRouter.of(context).pushNamed(MyAppRoutesConstants.homeRoute);
     } else {
       print("some error occured");
+    }
+  }
+
+  Future<void> signInGoogle(BuildContext context) async {
+    // setState(() {
+    //   _signingUp = true;
+    // });
+    User? user = await _firebaseServices.googleSignIn();
+    // setState(() {
+    //   _signingUp = false;
+    // });
+    if (user != null) {
+      //  await _firebaseServices.createUser(user.email!, user.displayName!);
+      GoRouter.of(context).pushNamed(MyAppRoutesConstants.homeRoute);
+    } else {
+      Fluttertoast.showToast(msg: 'error signing in');
     }
   }
 }

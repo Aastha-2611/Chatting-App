@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:go_router/go_router.dart';
 import 'package:v_chat/app_theme.dart/text_color.dart';
 import 'package:v_chat/helper/authservices.dart';
@@ -205,7 +206,9 @@ class _LoginScreenState extends State<LoginScreen> {
                                   backgroundColor: Colors.white,
                                   shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.zero)),
-                              onPressed: () {},
+                              onPressed: () async {
+                                // await signInGoogle(context);
+                              },
                               label: RichText(
                                   text: TextSpan(children: [
                                 TextSpan(
@@ -284,4 +287,20 @@ class _LoginScreenState extends State<LoginScreen> {
     } else
       print("some error occured");
   }
+
+  // Future<void> signInGoogle(BuildContext context) async {
+  //   setState(() {
+  //     _isSigning = true;
+  //   });
+  //   User? user = await _firebaseServices.googleSignIn();
+  //   setState(() {
+  //     _isSigning = false;
+  //   });
+  //   if (user != null) {
+  //     await _firebaseServices.createUser(user.email!, user.displayName!);
+  //     GoRouter.of(context).pushNamed(MyAppRoutesConstants.homeRoute);
+  //   } else {
+  //     Fluttertoast.showToast(msg: 'error signing in');
+  //   }
+  // }
 }

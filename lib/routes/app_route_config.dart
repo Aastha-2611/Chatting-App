@@ -20,7 +20,7 @@ class MyAppRoute {
         },
       ),
       GoRoute(
-        path: '/home',
+        path: '/',
         name: MyAppRoutesConstants.homeRoute,
         pageBuilder: (context, state) {
           return MaterialPage(child: HomeScreen());
@@ -34,7 +34,7 @@ class MyAppRoute {
         },
       ),
       GoRoute(
-          path: '/',
+          path: '/signUp',
           name: MyAppRoutesConstants.signUpRoute,
           pageBuilder: (context, state) {
             return MaterialPage(child: SignUp());
