@@ -1,11 +1,18 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+import 'package:v_chat/Riverpods/auth_pod.dart';
+
 import 'package:v_chat/routes/app_route_config.dart';
+import 'package:v_chat/routes/app_route_constant.dart';
+import 'package:v_chat/screens/home.dart';
 
 late Size mq;
 late double height;
 late double width;
+
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized;
 
@@ -17,18 +24,18 @@ Future main() async {
             messagingSenderId: "485062014072",
             projectId: "vchat-9c9e5"));
   }
-  runApp(const MyApp());
+  runApp(ProviderScope(child: MyApp()));
 }
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
-
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    // final authNotifier = ref.watch(authProvider);
     mq = MediaQuery.of(context).size;
     height = mq.height;
     width = mq.width;
+
     return MaterialApp.router(
       debugShowCheckedModeBanner: false,
       routerConfig: MyAppRoute().router,

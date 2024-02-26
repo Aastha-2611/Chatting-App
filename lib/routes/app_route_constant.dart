@@ -3,4 +3,5 @@ class MyAppRoutesConstants {
   static const String loginRoute = 'login';
   static const String gettingStartedRoute = 'getting_started';
   static const String signUpRoute = 'signUp';
+  static const String userProfileRoute = 'profile_screen';
 }

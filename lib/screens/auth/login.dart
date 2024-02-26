@@ -1,45 +1,32 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:v_chat/Riverpods/auth_pod.dart';
 import 'package:v_chat/app_theme.dart/text_color.dart';
-import 'package:v_chat/helper/authservices.dart';
 import 'package:v_chat/main.dart';
 import 'package:v_chat/routes/app_route_constant.dart';
 import 'package:wc_form_validators/wc_form_validators.dart';
 
-class LoginScreen extends StatefulWidget {
+class LoginScreen extends ConsumerWidget {
   LoginScreen({super.key});
 
-  @override
-  State<LoginScreen> createState() => _LoginScreenState();
-}
-
-class _LoginScreenState extends State<LoginScreen> {
-  bool _isSigning = false;
+  final bool _isSigning = false;
 
   final _formkey = GlobalKey<FormState>();
-  final FirebaseServices _firebaseServices = FirebaseServices();
-  TextEditingController _userNameController = TextEditingController();
-  TextEditingController _emailController = TextEditingController();
-  TextEditingController _passwordController = TextEditingController();
-
-  _submitForm(BuildContext context) {
-    if (_formkey.currentState!.validate()) {
-      print('login successful');
-      signInAction(context);
-    }
-  }
+  final TextEditingController _userNameController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
 
   void dispose() {
     _emailController.dispose();
     _userNameController.dispose();
     _passwordController.dispose();
-    super.dispose();
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final authNotifier = ref.watch(authProvider);
     return Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.white,
@@ -53,7 +40,7 @@ class _LoginScreenState extends State<LoginScreen> {
               horizontal: 40,
             ),
             child: Center(
-                child: _isSigning
+                child: authNotifier.isLoading
                     ? CircularProgressIndicator()
                     : Column(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -152,8 +139,33 @@ class _LoginScreenState extends State<LoginScreen> {
                                               AppConstantColors().blue,
                                           shape: RoundedRectangleBorder(
                                               borderRadius: BorderRadius.zero)),
-                                      onPressed: () {
-                                        _submitForm(context);
+                                      onPressed: () async {
+                                        if (_formkey.currentState!.validate()) {
+                                          User? user = await authNotifier
+                                              .loginWithFirebase(
+                                                  _emailController.text,
+                                                  _passwordController.text);
+
+                                          if (user != null) {
+                                            GoRouter.of(context).replaceNamed(
+                                                MyAppRoutesConstants.homeRoute);
+                                          } else {
+                                            ScaffoldMessenger.of(context)
+                                                .showSnackBar(
+                                              SnackBar(
+                                                content:
+                                                    Text('user not signed in'),
+                                              ),
+                                            );
+                                          }
+                                        } else {
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(
+                                            SnackBar(
+                                              content: Text('error signing in'),
+                                            ),
+                                          );
+                                        }
                                       },
                                       child: Text(
                                         'Login',
@@ -269,24 +281,26 @@ class _LoginScreenState extends State<LoginScreen> {
         ));
   }
 
-  void signInAction(BuildContext context) async {
-    setState(() {
-      _isSigning = true;
-    });
-    String email = _emailController.text;
-    String password = _passwordController.text;
+  // void signInAction(BuildContext context) async {
+  //   setState(() {
+  //     _isSigning = true;
+  //   });
+  //   String email = _emailController.text;
+  //   String password = _passwordController.text;
 
-    User? user =
-        await _firebaseServices.signInWithEmailAndPassword(email, password);
-    setState(() {
-      _isSigning = false;
-    });
-    if (user != null) {
-      print('Successful signin');
-      GoRouter.of(context).pushNamed(MyAppRoutesConstants.homeRoute);
-    } else
-      print("some error occured");
-  }
+  //   User? user =
+  //       await _firebaseServices.signInWithEmailAndPassword(email, password);
+  //   setState(() {
+  //     _isSigning = false;
+  //   });
+  //   if (user != null) {
+  //     print('Successful signin');
+
+  //     GoRouter.of(context).pushNamed(MyAppRoutesConstants.homeRoute);
+  //     _firebaseServices.setCurrentUser(context);
+  //   } else
+  //     print("some error occured");
+  // }
 
   // Future<void> signInGoogle(BuildContext context) async {
   //   setState(() {

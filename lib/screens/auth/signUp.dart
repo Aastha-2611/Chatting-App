@@ -1,44 +1,32 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:v_chat/Riverpods/auth_pod.dart';
 import 'package:v_chat/app_theme.dart/text_color.dart';
-import 'package:v_chat/helper/authservices.dart';
 import 'package:v_chat/main.dart';
 import 'package:v_chat/routes/app_route_constant.dart';
 import 'package:wc_form_validators/wc_form_validators.dart';
 
-class SignUp extends StatefulWidget {
+class SignUp extends ConsumerWidget {
   SignUp({super.key});
 
-  @override
-  State<SignUp> createState() => _SignUpState();
-}
-
-class _SignUpState extends State<SignUp> {
-  bool _signingUp = false;
+  final bool _signingUp = false;
   final _formkey = GlobalKey<FormState>();
 
-  final FirebaseServices _firebaseServices = FirebaseServices();
-  TextEditingController _userNameController = TextEditingController();
-  TextEditingController _emailController = TextEditingController();
-  TextEditingController _passwordController = TextEditingController();
-
-  _submitForm(BuildContext context) {
-    if (_formkey.currentState!.validate()) {
-      signUpAction(context);
-    }
-  }
+  final TextEditingController _userNameController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
 
   void dispose() {
     _emailController.dispose();
     _userNameController.dispose();
     _passwordController.dispose();
-    super.dispose();
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final authNotifier = ref.watch(authProvider);
     return Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.white,
@@ -52,7 +40,7 @@ class _SignUpState extends State<SignUp> {
               horizontal: 40,
             ),
             child: Center(
-                child: _signingUp
+                child: authNotifier.isLoading
                     ? CircularProgressIndicator()
                     : Column(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -151,8 +139,35 @@ class _SignUpState extends State<SignUp> {
                                               AppConstantColors().blue,
                                           shape: RoundedRectangleBorder(
                                               borderRadius: BorderRadius.zero)),
-                                      onPressed: () {
-                                        _submitForm(context);
+                                      onPressed: () async {
+                                        if (_formkey.currentState!.validate()) {
+                                          User? user = await authNotifier
+                                              .signUpWithFirebase(
+                                                  _emailController.text,
+                                                  _passwordController.text,
+                                                  _userNameController.text);
+
+                                          if (user != null) {
+                                            GoRouter.of(context).replaceNamed(
+                                                MyAppRoutesConstants.homeRoute);
+                                          } else {
+                                            ScaffoldMessenger.of(context)
+                                                .showSnackBar(
+                                              SnackBar(
+                                                content:
+                                                    Text('error signing up'),
+                                              ),
+                                            );
+                                          }
+                                        } else {
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(
+                                            SnackBar(
+                                              content:
+                                                  Text('user not signed up'),
+                                            ),
+                                          );
+                                        }
                                       },
                                       child: Text(
                                         'Sign Up',
@@ -270,40 +285,44 @@ class _SignUpState extends State<SignUp> {
         ));
   }
 
-  void signUpAction(BuildContext context) async {
-    setState(() {
-      _signingUp = true;
-    });
-    String email = _emailController.text;
-    String password = _passwordController.text;
-    String name = _userNameController.text;
+  // void signUpAction(BuildContext context) async {
+  //   setState(() {
+  //     _signingUp = true;
+  //   });
+  //   String email = _emailController.text;
+  //   String password = _passwordController.text;
+  //   String name = _userNameController.text;
 
-    User? user =
-        await _firebaseServices.signUpWithEmailAndPassword(email, password);
-    setState(() {
-      _signingUp = false;
-    });
-    if (user != null) {
-      _firebaseServices.createUser(user.uid, email, name);
-      GoRouter.of(context).pushNamed(MyAppRoutesConstants.homeRoute);
-    } else {
-      print("some error occured");
-    }
-  }
+  //   User? user =
+  //       await _firebaseServices.signUpWithEmailAndPassword(email, password);
+  //   setState(() {
+  //     _signingUp = false;
+  //   });
+  //   if (user != null) {
+  //     _firebaseServices.createUser(user.uid, email, name);
+  //     print("BuildContext in signUpAction: $context");
 
-  Future<void> signInGoogle(BuildContext context) async {
-    // setState(() {
-    //   _signingUp = true;
-    // });
-    User? user = await _firebaseServices.googleSignIn();
-    // setState(() {
-    //   _signingUp = false;
-    // });
-    if (user != null) {
-      //  await _firebaseServices.createUser(user.email!, user.displayName!);
-      GoRouter.of(context).pushNamed(MyAppRoutesConstants.homeRoute);
-    } else {
-      Fluttertoast.showToast(msg: 'error signing in');
-    }
-  }
+  //     GoRouter.of(context).pushNamed(MyAppRoutesConstants.homeRoute);
+  //     await _firebaseServices.setCurrentUser(context);
+  //     print("BuildContext in setcurrentuser: $context");
+  //   } else {
+  //     print("some error occured");
+  //   }
+  // }
+
+  // Future<void> signInGoogle(BuildContext context) async {
+  //   // setState(() {
+  //   //   _signingUp = true;
+  //   // });
+  //   User? user = await _firebaseServices.googleSignIn();
+  //   // setState(() {
+  //   //   _signingUp = false;
+  //   // });
+  //   if (user != null) {
+  //     //  await _firebaseServices.createUser(user.email!, user.displayName!);
+  //     GoRouter.of(context).pushNamed(MyAppRoutesConstants.homeRoute);
+  //   } else {
+  //     Fluttertoast.showToast(msg: 'error signing in');
+  //   }
+  // }
 }

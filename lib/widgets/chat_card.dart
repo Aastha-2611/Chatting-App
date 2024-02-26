@@ -1,10 +1,12 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:v_chat/main.dart';
+import 'package:v_chat/models/user_fields.dart';
 
 class ChatUserCard extends StatefulWidget {
-  const ChatUserCard({super.key});
-
+  final ChatUser chatUser;
+  const ChatUserCard({super.key, required this.chatUser});
   @override
   State<ChatUserCard> createState() => _ChatUserCardState();
 }
@@ -18,21 +20,28 @@ class _ChatUserCardState extends State<ChatUserCard> {
       child: InkWell(
         onTap: () {},
         child: ListTile(
-          leading: CircleAvatar(
-            child: Icon(CupertinoIcons.person),
-          ),
-          title: Text('demo user'),
-          subtitle: Text(
-            'demo subtitle',
-            maxLines: 1,
-          ),
-          trailing: Text(
-            'time',
-            style: TextStyle(
-              color: Colors.grey[800],
+            leading: ClipRRect(
+              borderRadius: BorderRadius.circular(mq.height * 0.3),
+              child: CachedNetworkImage(
+                width: mq.height * .05,
+                height: mq.height * .05,
+                imageUrl: widget.chatUser.image,
+                placeholder: (context, url) => CircularProgressIndicator(),
+                errorWidget: (context, url, error) =>
+                    Icon(CupertinoIcons.person),
+              ),
             ),
-          ),
-        ),
+            title: Text(widget.chatUser.name),
+            subtitle: Text(
+              widget.chatUser.about,
+              maxLines: 1,
+            ),
+            trailing: Container(
+              width: 12,
+              height: 12,
+              decoration: BoxDecoration(
+                  color: Colors.green, borderRadius: BorderRadius.circular(6)),
+            )),
       ),
     );
   }

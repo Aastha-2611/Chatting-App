@@ -8,19 +8,20 @@ import 'package:v_chat/screens/getting_started.dart';
 
 import 'package:v_chat/screens/home.dart';
 import 'package:v_chat/screens/page_not_found.dart';
+import 'package:v_chat/screens/profile_screen.dart';
 
 class MyAppRoute {
   GoRouter router = GoRouter(
     routes: <GoRoute>[
       GoRoute(
-        path: '/getting_started',
+        path: '/',
         name: MyAppRoutesConstants.gettingStartedRoute,
         pageBuilder: (context, state) {
           return MaterialPage(child: GettingStarted());
         },
       ),
       GoRoute(
-        path: '/',
+        path: '/home',
         name: MyAppRoutesConstants.homeRoute,
         pageBuilder: (context, state) {
           return MaterialPage(child: HomeScreen());
@@ -39,6 +40,13 @@ class MyAppRoute {
           pageBuilder: (context, state) {
             return MaterialPage(child: SignUp());
           }),
+      GoRoute(
+        path: '/profile_screen',
+        name: MyAppRoutesConstants.userProfileRoute,
+        pageBuilder: (context, state) {
+          return MaterialPage(child: ProfileScreen());
+        },
+      )
     ],
     errorPageBuilder: (context, state) {
       return MaterialPage(child: PageNotFound());
