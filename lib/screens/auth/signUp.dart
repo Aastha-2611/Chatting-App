@@ -11,7 +11,6 @@ import 'package:wc_form_validators/wc_form_validators.dart';
 class SignUp extends ConsumerWidget {
   SignUp({super.key});
 
-  final bool _signingUp = false;
   final _formkey = GlobalKey<FormState>();
 
   final TextEditingController _userNameController = TextEditingController();

@@ -11,8 +11,6 @@ import 'package:wc_form_validators/wc_form_validators.dart';
 class LoginScreen extends ConsumerWidget {
   LoginScreen({super.key});
 
-  final bool _isSigning = false;
-
   final _formkey = GlobalKey<FormState>();
   final TextEditingController _userNameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
